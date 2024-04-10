@@ -1,23 +1,43 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import Home from "../pages/Home";
+import { Route, Routes } from "react-router-dom";
+import Login from "../pages/Login";
+import Layout from "../pages/components/Layout";
+import Dashboard from "../pages/Dashboard";
 import User from "../pages/User";
 
-export const routeConfig = [
+export const layoutPage = [
   {
-    title: "首页",
+    title: "Dashboard",
     path: "/",
-    component: Home,
+    component: Dashboard,
   },
   {
-    title: "用户",
+    title: "User",
     path: "/user",
     component: User,
   },
 ];
 
 export default () => {
-  return routeConfig.map((route, index) => (
-    <Route key={index} path={route.path} Component={route.component} />
-  ));
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/*"
+        element={
+          <Layout>
+            <Routes>
+              {layoutPage.map((route) => (
+                <Route
+                  key={route.path}
+                  Component={route.component}
+                  path={route.path}
+                />
+              ))}
+            </Routes>
+          </Layout>
+        }
+      />
+    </Routes>
+  );
 };

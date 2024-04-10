@@ -27,9 +27,9 @@ export default () => {
         element={
           <Layout>
             <Routes>
-              {layoutPage.map((route) => (
+              {layoutPage.map((route, index) => (
                 <Route
-                  key={route.path}
+                  key={index}
                   Component={route.component}
                   path={route.path}
                 />

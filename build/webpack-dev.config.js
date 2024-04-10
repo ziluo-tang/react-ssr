@@ -10,6 +10,12 @@ module.exports = merge(client, {
     },
     compress: true,
     port: 9000,
-    historyApiFallback: true
+    historyApiFallback: true,
+    open: true,
+    hot: true,
+    client: {
+      logging: "warn",
+    },
   },
+  devtool: "cheap-source-map",
 });

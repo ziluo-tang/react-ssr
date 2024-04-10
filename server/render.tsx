@@ -1,6 +1,6 @@
 import express, { type Request, Response } from "express";
 import React from "react";
-import { renderToString } from "react-dom/server";
+import { renderToString, renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import renderRoute from "../router";
 
@@ -19,6 +19,25 @@ const render = (req: Request, res: Response) => {
   res.end(htmlTemplate(html));
 };
 
+const renderStream = (req: Request, res: Response) => {
+  const stream = renderToPipeableStream(
+    <div id="root">
+      <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+    </div>,
+    {
+      bootstrapScripts: ["bundle.js"],
+      onShellReady() {
+        res.writeHead(200, { "Content-Type": "text/html" });
+        stream.pipe(res);
+      },
+      onShellError(error) {
+        console.error(error);
+        res.writeHead(500, { "Content-Type": "text/html" });
+      },
+    }
+  );
+};
+
 function htmlTemplate(reactDom: string) {
   return `<!DOCTYPE html>
           <html>
@@ -26,11 +45,11 @@ function htmlTemplate(reactDom: string) {
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>React SSR</title>
-                <style>html, body {margin: 0;padding: 0;}</style>
+                <link href="index.css" rel="stylesheet">
             </head>
             <body>
                 <div id="root">${reactDom}</div>
-                <script src="/bundle.js"></script>
+                <script src="bundle.js"></script>
             </body>
           </html>
       `;

@@ -1,6 +1,7 @@
 const path = require("path");
 const WebpackBar = require("webpackbar");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   mode: "development",
@@ -28,13 +29,11 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          {
-            loader: "style-loader",
-            options: { injectType: "singletonStyleTag" },
-          },
+          MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
             options: {
+              esModule: false,
               modules: {
                 localIdentName: "[local]_[hash:base64:5]",
               },
@@ -49,7 +48,7 @@ module.exports = {
             },
           },
         ],
-      }
+      },
     ],
   },
   resolve: {
@@ -57,10 +56,13 @@ module.exports = {
   },
   plugins: [
     new WebpackBar(),
+    new MiniCssExtractPlugin({
+      filename: "index.css",
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../client/public/index.html"),
       filename: "index.html",
-      inject: 'body',
+      inject: "body",
     }),
   ],
 };

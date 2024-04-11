@@ -1,23 +1,36 @@
 import React from "react";
-import { Layout } from "antd";
+import { Layout, Button } from "antd";
 import Menu from "../Menu";
+import { useNavigate } from "react-router-dom";
+import css from "./index.less";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function ({ children }: { children?: React.ReactNode }) {
+const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
+  const navigate = useNavigate();
+  const onLogout = () => {
+    navigate("/login");
+  };
   return (
-    <Layout>
-      <Sider>
+    <Layout className={css.layout}>
+      <Sider className={css.sider} theme="light">
         <Menu />
       </Sider>
-      <Layout>
-        <Header>React SSR</Header>
-        <Content>{children}</Content>
-        <Footer>
+      <Layout className={css.main}>
+        <Header className={css.header}>
+          <h3>React SSR</h3>
+          <Button type="link" onClick={onLogout}>
+            退出
+          </Button>
+        </Header>
+        <Content className={css.content}>{children}</Content>
+        <Footer className={css.footer}>
           Copyright © 2023 tangxiaoxin. All Rights Reserved. tangxiaoxin
           版权所有
         </Footer>
       </Layout>
     </Layout>
   );
-}
+};
+
+export default BasicLayout;

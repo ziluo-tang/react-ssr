@@ -1,17 +1,20 @@
 import express, { type Request, Response } from "express";
-import React from "react";
+import React, { Component } from "react";
 import { renderToString, renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
-import renderRoute from "../router";
+import { matchRoutes } from "react-router-dom";
+import renderRoute, { routerConfig } from "../router";
 
 const router = express.Router();
 
 router.get("*", (req: Request, res: Response) => {
+  console.log(req.url, req.baseUrl);
   if (req.url === "/favicon.ico") return res.end();
   render(req, res);
 });
 
-const render = (req: Request, res: Response) => {
+const render = async (req: Request, res: Response) => {
+  await loadComponentProps(req);
   const html = renderToString(
     <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
   );
@@ -19,7 +22,7 @@ const render = (req: Request, res: Response) => {
   res.end(htmlTemplate(html));
 };
 
-const renderStream = (req: Request, res: Response) => {
+const streamRender = (req: Request, res: Response) => {
   const stream = renderToPipeableStream(
     <div id="root">
       <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
@@ -35,6 +38,17 @@ const renderStream = (req: Request, res: Response) => {
         res.writeHead(500, { "Content-Type": "text/html" });
       },
     }
+  );
+};
+
+const loadComponentProps = (req: Request) => {
+  const routes = matchRoutes(routerConfig, req.url);
+  routes.forEach((route) => {
+    route.route.component.getServerSideProps =
+      route.route.component.getServerSideProps || (() => Promise.resolve({}));
+  });
+  return Promise.all(
+    routes.map(({ route }) => route.component.getServerSideProps())
   );
 };
 

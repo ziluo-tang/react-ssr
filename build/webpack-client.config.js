@@ -61,7 +61,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../client/public/index.html"),
-      filename: "index.html",
+      filename: "client.html",
       inject: "body",
     }),
   ],

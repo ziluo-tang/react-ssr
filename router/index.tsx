@@ -5,39 +5,62 @@ import Layout from "../pages/components/Layout";
 import Dashboard from "../pages/Dashboard";
 import User from "../pages/User";
 
-export const layoutPage = [
+type Component = {
+  (...args: any[]): React.JSX.Element;
+  getServerSideProps?: () => Promise<any>;
+};
+
+export type RouteProps = {
+  path: string;
+  component: Component;
+  children?: RouteProps[];
+};
+
+export const routerConfig: RouteProps[] = [
+  {
+    path: "/login",
+    component: Login,
+  },
+  {
+    path: "/*",
+    component: Layout,
+    children: [
+      {
+        path: "",
+        component: Dashboard,
+      },
+      {
+        path: "user",
+        component: User,
+      },
+    ],
+  },
+];
+
+export const menu = [
   {
     title: "Dashboard",
     path: "/",
-    component: Dashboard,
   },
   {
     title: "User",
     path: "/user",
-    component: User,
   },
 ];
 
-export default () => {
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/*"
-        element={
-          <Layout>
-            <Routes>
-              {layoutPage.map((route, index) => (
-                <Route
-                  key={index}
-                  Component={route.component}
-                  path={route.path}
-                />
-              ))}
-            </Routes>
-          </Layout>
-        }
-      />
-    </Routes>
-  );
+const renderRoute = (routes = routerConfig) => {
+  return routes.map((route) => {
+    if (route.children) {
+      return (
+        <Route key={route.path} Component={route.component} path={route.path}>
+          {renderRoute(route.children)}
+        </Route>
+      );
+    }
+    return (
+      <Route key={route.path} Component={route.component} path={route.path} />
+    );
+  });
 };
+
+export default () => <Routes>{renderRoute()}</Routes>;

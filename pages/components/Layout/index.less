@@ -5,7 +5,30 @@
   align-items: flex-start;
   .sider {
     height: 100vh;
-    width: 10vw;
-    min-width: 180px;
+    width: max(10vw, 180px);
+    :global(.ant-menu-light) {
+      border-inline-end: unset;
+    }
+  }
+  .main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    .header {
+      background-color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+    }
+    .content {
+      padding: 24px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .footer {
+      text-align: center;
+      letter-spacing: 1px;
+    }
   }
 }

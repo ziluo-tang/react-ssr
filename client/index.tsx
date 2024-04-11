@@ -4,4 +4,4 @@ import App from "../pages";
 
 const container = document.getElementById("root") as HTMLElement;
 
-const root = hydrateRoot(container, <App />);
+hydrateRoot(container, <App />);

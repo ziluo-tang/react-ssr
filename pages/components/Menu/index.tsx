@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu, MenuProps } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
-import { layoutPage } from "../../../router";
+import { menu } from "../../../router";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -22,7 +22,7 @@ function getItem(
 
 export default function () {
   const { pathname } = useLocation();
-  const items = layoutPage.map((route) =>
+  const items = menu.map((route) =>
     getItem(route.title, route.path, route.path)
   );
   return <Menu mode="vertical" selectedKeys={[pathname]} items={items}></Menu>;

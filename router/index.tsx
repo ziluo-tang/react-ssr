@@ -1,5 +1,6 @@
-import React, { cloneElement, createElement, lazy } from "react";
+import React, { cloneElement, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
 import Layout from "../pages/components/Layout";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
@@ -50,10 +51,12 @@ export const menu = [
   {
     title: "Dashboard",
     path: "/",
+    icon: <DashboardOutlined />,
   },
   {
     title: "User",
     path: "/user",
+    icon: <UserOutlined />,
   },
 ];
 
@@ -61,10 +64,11 @@ const renderRoutes = (routes = routerConfig) => {
   return (
     <Routes>
       {routes.map((route, index) => {
+        const key = route.path ?? index;
         if (route.children) {
           return (
             <Route
-              key={route.path ?? index}
+              key={key}
               element={
                 route.path
                   ? route.element
@@ -76,9 +80,7 @@ const renderRoutes = (routes = routerConfig) => {
             />
           );
         }
-        return (
-          <Route key={route.path} element={route.element} path={route.path} />
-        );
+        return <Route key={key} element={route.element} path={route.path} />;
       })}
     </Routes>
   );

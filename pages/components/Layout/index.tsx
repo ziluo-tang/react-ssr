@@ -1,7 +1,8 @@
 import React from "react";
-import { Layout, Button } from "antd";
-import Menu from "../Menu";
+import { Layout, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
+import { LogoutOutlined } from "@ant-design/icons";
+import Menu from "../Menu";
 import css from "./index.less";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -9,21 +10,35 @@ const { Header, Content, Footer, Sider } = Layout;
 const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate();
   const onLogout = () => {
-    navigate("/login");
+    Modal.confirm({
+      title: "确认退出吗？",
+      okText: "确认",
+      cancelText: "再想想",
+      onOk() {
+        navigate("/login");
+      },
+    });
   };
   return (
     <Layout className={css.layout}>
-      <Sider className={css.sider} theme="light">
+      <Sider className={css.sider}>
         <Menu />
       </Sider>
       <Layout className={css.main}>
         <Header className={css.header}>
           <h3>React SSR</h3>
-          <Button type="link" onClick={onLogout}>
+          <Button
+            type="link"
+            className={css.logout}
+            onClick={onLogout}
+            icon={<LogoutOutlined />}
+          >
             退出
           </Button>
         </Header>
-        <Content className={css.content}>{children}</Content>
+        <Content className={css.content}>
+          <div className={css.container}>{children}</div>
+        </Content>
         <Footer className={css.footer}>
           Copyright © 2023 tangxiaoxin. All Rights Reserved. tangxiaoxin
           版权所有

@@ -7,7 +7,7 @@ export default () => {
   return (
     <Result title="🤔走丢了……" status={404}>
       <div style={{ textAlign: "center" }}>
-        <Button type="link" onClick={() => navigate("/")}>
+        <Button type="link" onClick={() => navigate("/")} size="large">
           go back
         </Button>
       </div>

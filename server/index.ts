@@ -5,8 +5,6 @@ const app = express();
 
 app.use(express.static("dist/client"));
 
-app.get("/favicon.ico", (req, res) => res.status(200).end());
-
 app.use(render);
 
 app.listen(8000, () => {

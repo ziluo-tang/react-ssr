@@ -13,10 +13,20 @@ const Login = () => {
       <div className={css.form}>
         <h2 className={css.title}>用户登陆</h2>
         <Form onFinish={onFinish} labelCol={{ span: 4 }}>
-          <Form.Item label="用户名" name="user">
+          <Form.Item
+            label="用户名"
+            name="user"
+            required
+            rules={[{ required: true, message: "请输入用户名" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="密码" name="password">
+          <Form.Item
+            label="密码"
+            name="password"
+            required
+            rules={[{ required: true, message: "请输入密码" }]}
+          >
             <Input type="password" />
           </Form.Item>
           <Form.Item style={{ textAlign: "right" }}>

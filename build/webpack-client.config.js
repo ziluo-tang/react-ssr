@@ -49,6 +49,10 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
     ],
   },
   resolve: {
@@ -63,6 +67,7 @@ module.exports = {
       template: path.resolve(__dirname, "../client/public/index.html"),
       filename: "client.html",
       inject: "body",
+      favicon: path.resolve(__dirname, "../client/public/icon.png"),
     }),
   ],
 };

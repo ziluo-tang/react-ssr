@@ -67,7 +67,7 @@ module.exports = {
       template: path.resolve(__dirname, "../client/public/index.html"),
       filename: "client.html",
       inject: "body",
-      favicon: path.resolve(__dirname, "../client/public/icon.png"),
+      favicon: path.resolve(__dirname, "../client/public/favicon.svg"),
     }),
   ],
 };

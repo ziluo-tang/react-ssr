@@ -33,4 +33,11 @@ const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
+BasicLayout.getServerSideProps = async () => {
+  console.log("Layout getServerSideProps");
+  return {
+    props: {},
+  };
+};
+
 export default BasicLayout;

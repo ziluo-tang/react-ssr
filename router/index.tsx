@@ -1,37 +1,46 @@
-import React from "react";
+import React, { cloneElement, createElement, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "../pages/Login";
 import Layout from "../pages/components/Layout";
+import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import User from "../pages/User";
+import NotFound from "../pages/NotFound";
+
+// const Login = lazy(() => import("../pages/Login"));
+// const Dashboard = lazy(() => import("../pages/Dashboard"));
+// const User = lazy(() => import("../pages/User"));
 
 type Component = {
   (...args: any[]): React.JSX.Element;
   getServerSideProps?: () => Promise<any>;
 };
 
-export type RouteProps = {
-  path: string;
-  component: Component;
-  children?: RouteProps[];
+export type IRoute = {
+  path?: string;
+  element?: React.JSX.Element;
+  component?: Component;
+  children?: IRoute[];
 };
 
-export const routerConfig: RouteProps[] = [
+export const routerConfig: IRoute[] = [
   {
     path: "/login",
-    component: Login,
+    element: <Login />,
   },
   {
-    path: "/*",
-    component: Layout,
+    element: <Layout />,
     children: [
       {
-        path: "",
-        component: Dashboard,
+        path: "/",
+        element: <Dashboard />,
       },
       {
-        path: "user",
-        component: User,
+        path: "/user",
+        element: <User />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
@@ -48,19 +57,31 @@ export const menu = [
   },
 ];
 
-const renderRoute = (routes = routerConfig) => {
-  return routes.map((route) => {
-    if (route.children) {
-      return (
-        <Route key={route.path} Component={route.component} path={route.path}>
-          {renderRoute(route.children)}
-        </Route>
-      );
-    }
-    return (
-      <Route key={route.path} Component={route.component} path={route.path} />
-    );
-  });
+const renderRoutes = (routes = routerConfig) => {
+  return (
+    <Routes>
+      {routes.map((route, index) => {
+        if (route.children) {
+          return (
+            <Route
+              key={route.path ?? index}
+              element={
+                route.path
+                  ? route.element
+                  : cloneElement(route.element, {
+                      children: renderRoutes(route.children),
+                    })
+              }
+              path={route.path ?? "/*"}
+            />
+          );
+        }
+        return (
+          <Route key={route.path} element={route.element} path={route.path} />
+        );
+      })}
+    </Routes>
+  );
 };
 
-export default () => <Routes>{renderRoute()}</Routes>;
+export default renderRoutes;

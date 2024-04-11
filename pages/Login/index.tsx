@@ -30,4 +30,11 @@ const Login = () => {
   );
 };
 
+Login.getServerSideProps = async () => {
+  console.log("Login getServerSideProps");
+  return {
+    props: {},
+  };
+};
+
 export default Login;

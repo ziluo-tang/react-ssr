@@ -19,7 +19,11 @@ const User = () => {
   };
   return (
     <div className={css.user}>
-      <Space align="end" style={{ width: "100%", marginBottom: 20 }} direction="horizontal">
+      <Space
+        align="end"
+        style={{ width: "100%", marginBottom: 20 }}
+        direction="horizontal"
+      >
         <Button type="primary" onClick={onClick}>
           新增用户
         </Button>
@@ -45,8 +49,16 @@ const User = () => {
   );
 };
 
-User.getServerSideProps = async () => {
+User.getServerSideProps = async (store) => {
   console.log("User getServerSideProps");
+  store.dispatch(
+    insertUser({
+      name: "xxx",
+      email: "xxxx",
+      git: "xxxx",
+      avatar: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
+    })
+  );
   return {
     props: {},
   };

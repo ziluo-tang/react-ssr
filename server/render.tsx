@@ -16,7 +16,7 @@ router.get("*", (req: Request, res: Response) => {
 
 const render = async (req: Request, res: Response) => {
   const { store } = getServerStore();
-  await loadComponentProps(req);
+  await loadComponentProps(req, store);
   const html = renderToString(
     <Html
       state={store.getState()}
@@ -32,7 +32,8 @@ const render = async (req: Request, res: Response) => {
 };
 
 const streamRender = async (req: Request, res: Response) => {
-  await loadComponentProps(req);
+  const { store } = getServerStore();
+  await loadComponentProps(req, store);
   const stream = renderToPipeableStream(
     <div id="root">
       <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
@@ -52,16 +53,16 @@ const streamRender = async (req: Request, res: Response) => {
   );
 };
 
-const loadComponentProps = (req: Request) => {
+const loadComponentProps = (req: Request, store) => {
   const routes = matchRoutes(routerConfig, req.url);
   const initFns = routes?.map(({ route }) => {
     return (
       route.element?.type?.getServerSideProps ??
       route.component?.getServerSideProps ??
-      (() => Promise.resolve({}))
+      (() => Promise.resolve())
     );
   });
-  return Promise.all((initFns ?? []).map((fn) => fn()));
+  return Promise.all((initFns ?? []).map((fn) => fn(store)));
 };
 
 const Html = ({

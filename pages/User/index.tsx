@@ -24,7 +24,7 @@ const User = () => {
         style={{ width: "100%", marginBottom: 20 }}
         direction="horizontal"
       >
-        <Button type="primary" onClick={onClick}>
+        <Button type="primary" onClick={onClick} name="add">
           新增用户
         </Button>
       </Space>

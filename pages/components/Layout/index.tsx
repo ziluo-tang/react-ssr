@@ -34,6 +34,7 @@ const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
             className={css.logout}
             onClick={onLogout}
             icon={<LogoutOutlined />}
+            name="logout"
           >
             退出
           </Button>

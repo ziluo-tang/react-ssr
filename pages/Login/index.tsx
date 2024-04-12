@@ -31,7 +31,7 @@ const Login = () => {
             <Input type="password" />
           </Form.Item>
           <Form.Item style={{ textAlign: "right" }}>
-            <Button htmlType="submit" type="primary">
+            <Button htmlType="submit" type="primary" name="login">
               登录
             </Button>
           </Form.Item>

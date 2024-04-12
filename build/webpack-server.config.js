@@ -9,6 +9,7 @@ module.exports = {
     filename: "index.js",
     path: path.resolve(__dirname, "../dist/server"),
     clean: true,
+    publicPath: "/",
   },
   externals: [nodeExternals()],
   module: {
@@ -48,6 +49,10 @@ module.exports = {
             },
           },
         ],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },

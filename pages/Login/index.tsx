@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import Icon from "../components/Icon";
 import css from "./index.less";
 const Login = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Login = () => {
   return (
     <div className={css.login}>
       <div className={css.form}>
-        <h2 className={css.title}>用户登陆</h2>
+        <Icon />
         <Form onFinish={onFinish} labelCol={{ span: 4 }}>
           <Form.Item
             label="用户名"

@@ -4,3 +4,12 @@ declare module "*.less" {
   };
   export default classes;
 }
+
+declare module "*.png" {
+  const value: any;
+  export default value;
+}
+
+interface Window {
+  _store_: any;
+}

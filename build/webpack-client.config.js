@@ -10,6 +10,7 @@ module.exports = {
     filename: "bundle.js",
     path: path.resolve(__dirname, "../dist/client"),
     clean: true,
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -68,6 +69,7 @@ module.exports = {
       filename: "client.html",
       inject: "body",
       favicon: path.resolve(__dirname, "../client/public/favicon.svg"),
+      minify: true,
     }),
   ],
 };

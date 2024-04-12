@@ -1,9 +1,11 @@
 import express, { type Request, Response } from "express";
-import React from "react";
+import React, { createElement } from "react";
 import { renderToString, renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { matchRoutes } from "react-router-dom";
 import renderRoute, { routerConfig } from "../router";
+import { Provider } from "react-redux";
+import { getServerStore } from "../store";
 // import StyleContext from 'isomorphic-style-loader/StyleContext'
 
 const router = express.Router();
@@ -13,10 +15,16 @@ router.get("*", (req: Request, res: Response) => {
 });
 
 const render = async (req: Request, res: Response) => {
+  const { store } = getServerStore();
   await loadComponentProps(req);
   const html = renderToString(
-    <Html assets={{ js: ["bundle.js"], css: ["index.css"] }}>
-      <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+    <Html
+      state={store.getState()}
+      assets={{ js: ["bundle.js"], css: ["index.css"] }}
+    >
+      <Provider store={store}>
+        <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+      </Provider>
     </Html>
   );
   res.writeHead(200, { "Content-Type": "text/html" });
@@ -59,9 +67,11 @@ const loadComponentProps = (req: Request) => {
 const Html = ({
   title = "React SSR",
   assets = {},
+  state,
   children,
 }: Partial<{
   title: string;
+  state: any;
   assets: Partial<{ js: string[]; css: string[] }>;
   children: React.ReactElement;
 }>) => {
@@ -70,6 +80,14 @@ const Html = ({
   const link = css?.map((href) => (
     <link href={href} rel="stylesheet" key={href}></link>
   ));
+  state = `window._store_=${JSON.stringify(state)}`;
+  script.unshift(
+    createElement("script", {
+      dangerouslySetInnerHTML: {
+        __html: state,
+      },
+    })
+  );
   return (
     <html>
       <head>

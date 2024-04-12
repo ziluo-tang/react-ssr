@@ -13,7 +13,7 @@ import NotFound from "../pages/NotFound";
 
 type Component = {
   (...args: any[]): React.JSX.Element;
-  getServerSideProps?: () => Promise<any>;
+  getServerSideProps?: (store: any) => Promise<any>;
 };
 
 export type IRoute = {

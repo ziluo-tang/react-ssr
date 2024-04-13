@@ -3,7 +3,8 @@ import React, { createElement } from "react";
 import { renderToString, renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { matchRoutes } from "react-router-dom";
-import renderRoute, { routerConfig } from "../router";
+import App from "../pages";
+import { routerConfig } from "../router";
 import { Provider } from "react-redux";
 import { getServerStore } from "../store";
 // import StyleContext from 'isomorphic-style-loader/StyleContext'
@@ -23,7 +24,9 @@ const render = async (req: Request, res: Response) => {
       assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
     >
       <Provider store={store}>
-        <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+        <StaticRouter location={req.url}>
+          <App />
+        </StaticRouter>
       </Provider>
     </Html>
   );
@@ -36,7 +39,9 @@ const streamRender = async (req: Request, res: Response) => {
   await loadComponentProps(req, store);
   const stream = renderToPipeableStream(
     <div id="root">
-      <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+      <StaticRouter location={req.url}>
+        <App />
+      </StaticRouter>
     </div>,
     {
       bootstrapScripts: ["bundle.js"],

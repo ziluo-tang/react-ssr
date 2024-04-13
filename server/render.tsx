@@ -6,7 +6,7 @@ import { matchRoutes } from "react-router-dom";
 import renderRoute, { routerConfig } from "../router";
 import { Provider } from "react-redux";
 import { getServerStore } from "../store";
-// import StyleContext from 'isomorphic-style-loader/StyleContext'
+import StyleContext from "isomorphic-style-loader/StyleContext";
 
 const router = express.Router();
 
@@ -15,15 +15,18 @@ router.get("*", (req: Request, res: Response) => {
 });
 
 const render = async (req: Request, res: Response) => {
+  const { insertCss, css } = collectStyle();
   const { store } = getServerStore();
   await loadComponentProps(req, store);
   const html = renderToString(
     <Html
       state={store.getState()}
-      assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
+      assets={{ js: ["vendor.js", "main.js"], style: css }}
     >
       <Provider store={store}>
-        <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+        <StyleContext.Provider value={{ insertCss }}>
+          <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+        </StyleContext.Provider>
       </Provider>
     </Html>
   );
@@ -32,14 +35,21 @@ const render = async (req: Request, res: Response) => {
 };
 
 const streamRender = async (req: Request, res: Response) => {
+  const { insertCss, css } = collectStyle();
   const { store } = getServerStore();
   await loadComponentProps(req, store);
   const stream = renderToPipeableStream(
-    <div id="root">
-      <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
-    </div>,
+    <Html
+      state={store.getState()}
+      assets={{ js: ["vendor.js", "main.js"], style: css }}
+    >
+      <Provider store={store}>
+        <StyleContext.Provider value={{ insertCss }}>
+          <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>
+        </StyleContext.Provider>
+      </Provider>
+    </Html>,
     {
-      bootstrapScripts: ["bundle.js"],
       onShellReady() {
         res.writeHead(200, { "Content-Type": "text/html" });
         stream.pipe(res);
@@ -51,6 +61,13 @@ const streamRender = async (req: Request, res: Response) => {
       },
     }
   );
+};
+
+const collectStyle = () => {
+  const css = new Set(); // CSS for all rendered React components
+  const insertCss = (...styles) =>
+    styles.forEach((style) => css.add(style._getCss()));
+  return { insertCss, css };
 };
 
 const loadComponentProps = (req: Request, store) => {
@@ -73,14 +90,17 @@ const Html = ({
 }: Partial<{
   title: string;
   state: any;
-  assets: Partial<{ js: string[]; css: string[] }>;
+  assets: Partial<{ js: string[]; style: Set<any>; link: string[] }>;
   children: React.ReactElement;
 }>) => {
-  const { js, css } = assets;
-  const script = js?.map((src) => <script src={src} key={src}></script>);
-  const link = css?.map((href) => (
+  const { js, style, link } = assets;
+  const script = js?.map((src) => (
+    <script src={src} key={src} defer={true}></script>
+  ));
+  const links = link?.map((href) => (
     <link href={href} rel="stylesheet" key={href}></link>
   ));
+  const styles = [...style].join("");
   state = `window._store_=${JSON.stringify(state)}`;
   script.unshift(
     createElement("script", {
@@ -97,7 +117,8 @@ const Html = ({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
         <link rel="icon" href="favicon.svg"></link>
-        {link}
+        <style>{styles}</style>
+        {links}
       </head>
       <body>
         <div id="root">{children}</div>

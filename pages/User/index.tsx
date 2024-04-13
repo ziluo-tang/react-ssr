@@ -3,8 +3,10 @@ import { Card, Button, Space } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { insertUser } from "../../store/user";
 import css from "./index.less";
+import useStyles from 'isomorphic-style-loader/useStyles'
 
 const User = () => {
+  useStyles(css);
   const { list } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const onClick = () => {

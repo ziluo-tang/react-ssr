@@ -1,16 +1,10 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
 import renderRoute from "../router";
-import { Provider } from "react-redux";
-import { getClientStore } from "../store";
-import "./index.less";
+import withStyles from "isomorphic-style-loader/withStyles";
+import css from "./index.less";
+
 const App = () => {
-  const { store, preloadedState } = getClientStore();
-  return (
-    <Provider store={store} serverState={preloadedState}>
-      <BrowserRouter>{renderRoute()}</BrowserRouter>
-    </Provider>
-  );
+  return renderRoute();
 };
 
-export default App;
+export default withStyles(css)(App);

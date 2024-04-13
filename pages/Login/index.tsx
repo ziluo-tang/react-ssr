@@ -3,7 +3,9 @@ import { Form, Input, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import Icon from "../components/Icon";
 import css from "./index.less";
+import useStyles from "isomorphic-style-loader/useStyles";
 const Login = () => {
+  useStyles(css);
   const navigate = useNavigate();
   const onFinish = (values: FormData) => {
     navigate("/");

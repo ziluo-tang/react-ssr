@@ -5,10 +5,12 @@ import { LogoutOutlined } from "@ant-design/icons";
 import Menu from "../Menu";
 import Icon from "../Icon";
 import css from "./index.less";
+import useStyles from 'isomorphic-style-loader/useStyles'
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
+  useStyles(css);
   const navigate = useNavigate();
   const onLogout = () => {
     Modal.confirm({

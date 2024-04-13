@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: path.join(__dirname, "../client/index.tsx"),
   output: {
     filename: "[name].js",
@@ -30,7 +30,8 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          // MiniCssExtractPlugin.loader,
+          "isomorphic-style-loader",
           {
             loader: "css-loader",
             options: {
@@ -72,15 +73,14 @@ module.exports = {
   },
   plugins: [
     new WebpackBar(),
-    new MiniCssExtractPlugin({
-      filename: "index.css",
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: "index.css",
+    // }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../client/public/index.html"),
       filename: "client.html",
       inject: "body",
       favicon: path.resolve(__dirname, "../client/public/favicon.svg"),
-      minify: true,
     }),
   ],
 };

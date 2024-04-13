@@ -1,8 +1,10 @@
 import express from "express";
 import render from "./render";
+import compression from 'compression'
 
 const app = express();
 
+app.use(compression())
 app.use(express.static("dist/client"));
 
 app.use(render);

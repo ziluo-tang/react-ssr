@@ -7,7 +7,7 @@ module.exports = {
   mode: "development",
   entry: path.join(__dirname, "../client/index.tsx"),
   output: {
-    filename: "bundle.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "../dist/client"),
     clean: true,
     publicPath: "/",
@@ -58,6 +58,17 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js"],
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all",
+        },
+      },
+    },
   },
   plugins: [
     new WebpackBar(),

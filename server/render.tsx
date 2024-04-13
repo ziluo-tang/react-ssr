@@ -20,7 +20,7 @@ const render = async (req: Request, res: Response) => {
   const html = renderToString(
     <Html
       state={store.getState()}
-      assets={{ js: ["bundle.js"], css: ["index.css"] }}
+      assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
     >
       <Provider store={store}>
         <StaticRouter location={req.url}>{renderRoute()}</StaticRouter>

@@ -1,11 +1,11 @@
 import React from "react";
 import { Card, Button, Space } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import { insertUser } from "../../store/user";
+import { insertUser, selectAllUser } from "../../store/user";
 import css from "./index.less";
 
 const User = () => {
-  const { list } = useSelector((state: any) => state.user);
+  const list = useSelector(selectAllUser);
   const dispatch = useDispatch();
   const onClick = () => {
     dispatch(

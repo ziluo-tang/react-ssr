@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { getDashboardData } from "../../store/dashboard";
+import { useDispatch } from "react-redux";
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getDashboardData());
+  }, []);
   return <div>Dashboard</div>;
 };
 

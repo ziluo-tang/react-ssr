@@ -1,7 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
+import logger from "redux-logger";
+import dashboardReducer from "./dashboard";
 import userReducer from "./user";
 
-const reducer = { user: userReducer };
+const reducer = { dashboard: dashboardReducer, user: userReducer };
 
 const getClientStore = () => {
   const preloadedState = window._store_ ?? {};
@@ -11,6 +13,9 @@ const getClientStore = () => {
       preloadedState,
       //@ts-ignore
       reducer,
+      middleware(getDefaultMiddleware) {
+        return getDefaultMiddleware().concat(logger);
+      },
     }),
   };
 };

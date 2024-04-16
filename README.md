@@ -1,13 +1,16 @@
 # React SSR
 
-基于 React 和 Express 的服务端渲染架构，支持：
+Server-side rendering architecture based on React and Express, supporting:
 
-- 路由配置：react-router
-- 样式管理：styled-components
-- 状态管理：redux
-- 动态加载：lazy
-- 代码分割：code-splitting
-- 热更新：hot-reload
+- router-config: react-router-dom
+- style manage: mini-css-extract-plugin, isomorphic-style-loader
+- state manage: redux, redux-thunk
+- dynamic load：lazy, react-loadable, renderToPipeableStream
+- spiteChunk：code-splitting
+- HMR：hot-reload
+- and so on
+
+## Start
 
 ```ts
 git clone https://github.com/ziluo-tang/react-ssr.git

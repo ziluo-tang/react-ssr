@@ -17,4 +17,8 @@ const Page = (
   </Provider>
 );
 
-hydrateRoot(container, Page);
+hydrateRoot(container, Page, {
+  onRecoverableError(error, errorInfo) {
+    console.dir(errorInfo);
+  },
+});

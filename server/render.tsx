@@ -3,6 +3,8 @@ import React, { createElement } from "react";
 import { renderToString, renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { matchRoutes } from "react-router-dom";
+import { readdirSync } from "fs";
+import { join } from "path";
 import App from "../pages";
 import { routerConfig } from "../router";
 import { Provider } from "react-redux";
@@ -12,16 +14,17 @@ import { getServerStore } from "../store";
 const router = express.Router();
 
 router.get("*", (req: Request, res: Response) => {
-  render(req, res);
+  streamRender(req, res);
 });
 
 const render = async (req: Request, res: Response) => {
   const { store } = getServerStore();
+  const { js, css } = getBundleFromStatic();
   await loadComponentProps(req, store);
   const html = renderToString(
     <Html
       state={store.getState()}
-      assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
+      assets={{ js: ["vendor.js", "main.js"], css }}
     >
       <Provider store={store}>
         <StaticRouter location={req.url}>
@@ -36,15 +39,21 @@ const render = async (req: Request, res: Response) => {
 
 const streamRender = async (req: Request, res: Response) => {
   const { store } = getServerStore();
+  const { js, css } = getBundleFromStatic();
   await loadComponentProps(req, store);
   const stream = renderToPipeableStream(
-    <div id="root">
-      <StaticRouter location={req.url}>
-        <App />
-      </StaticRouter>
-    </div>,
+    <Html
+      state={store.getState()}
+      assets={{ js: ["vendor.js", "main.js"], css }}
+    >
+      <Provider store={store}>
+        <StaticRouter location={req.url}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    </Html>,
     {
-      bootstrapScripts: ["bundle.js"],
+      // bootstrapScripts: ["bundle.js"],
       onShellReady() {
         res.writeHead(200, { "Content-Type": "text/html" });
         stream.pipe(res);
@@ -56,6 +65,13 @@ const streamRender = async (req: Request, res: Response) => {
       },
     }
   );
+};
+
+const getBundleFromStatic = () => {
+  const files = readdirSync(join(__dirname, "../client"));
+  const js = files.filter((file) => file.endsWith(".js"));
+  const css = files.filter((file) => file.endsWith(".css"));
+  return { js, css };
 };
 
 const loadComponentProps = (req: Request, store) => {
@@ -82,7 +98,9 @@ const Html = ({
   children: React.ReactElement;
 }>) => {
   const { js, css } = assets;
-  const script = js?.map((src) => <script src={src} key={src}></script>);
+  const script = js?.map((src) => (
+    <script src={src} key={src} defer={true}></script>
+  ));
   const link = css?.map((href) => (
     <link href={href} rel="stylesheet" key={href}></link>
   ));

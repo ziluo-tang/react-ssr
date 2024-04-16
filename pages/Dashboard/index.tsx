@@ -1,13 +1,24 @@
-import React, { useEffect } from "react";
-import { getDashboardData } from "../../store/dashboard";
-import { useDispatch } from "react-redux";
+import React, { Suspense, lazy, useEffect } from "react";
+import { getDashboardData, selectDashboard } from "../../store/dashboard";
+import { useDispatch, useSelector } from "react-redux";
+import { Spin } from "antd";
+
+const Panel = lazy(() => import("./Panel"));
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const { data, loading } = useSelector(selectDashboard);
   useEffect(() => {
     dispatch(getDashboardData());
   }, []);
-  return <div>Dashboard</div>;
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <Suspense fallback={<Spin spinning={true} />}>
+        <Panel list={data} />
+      </Suspense>
+    </div>
+  );
 };
 
 Dashboard.getServerSideProps = async () => {

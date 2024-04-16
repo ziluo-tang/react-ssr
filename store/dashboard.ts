@@ -3,29 +3,46 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
-    dashboardData: {},
+    loading: false,
+    data: [],
   },
   reducers: {
     setData(state, action) {
-      state.dashboardData = action.payload;
+      state.data = action.payload;
     },
   },
-  //添加异步reducer
+  //register async reducer
   extraReducers(builder) {
+    builder.addCase(getDashboardData.pending, (state, action) => {
+      state.loading = true;
+    });
     builder.addCase(getDashboardData.fulfilled, (state, action) => {
-      state.dashboardData = action.payload;
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getDashboardData.rejected, (state, action) => {
+      state.loading = false;
     });
   },
 });
 
 export const { setData } = dashboardSlice.actions;
 
-
-//异步action
+//async action
 export const getDashboardData = createAsyncThunk(
   "dashboard/getDashboardData",
   async () => {
-    const ret = await request({ email: "1302947749@qq.com" });
+    const ret = await request([
+      { label: "UserName", children: "Zhou Maomao" },
+      { label: "Telephone", children: "1810000000" },
+      { label: "Live", children: "Hangzhou, Zhejiang" },
+      { label: "Remark", children: "empty" },
+      {
+        label: "Address",
+        children:
+          "No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China",
+      },
+    ]);
     return ret;
   }
 );
@@ -36,5 +53,7 @@ const request = (args) =>
       resolve(args);
     }, 1000);
   });
+
+export const selectDashboard = (state) => state.dashboard;
 
 export default dashboardSlice.reducer;

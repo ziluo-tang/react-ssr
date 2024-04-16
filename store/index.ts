@@ -14,7 +14,13 @@ const getClientStore = () => {
       //@ts-ignore
       reducer,
       middleware(getDefaultMiddleware) {
-        return getDefaultMiddleware().concat(logger);
+        const defaultMiddleware = getDefaultMiddleware({
+          serializableCheck: false,
+        });
+        if (process.env.NODE_ENV === "development") {
+          return defaultMiddleware.concat(logger);
+        }
+        return defaultMiddleware;
       },
     }),
   };

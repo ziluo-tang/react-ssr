@@ -14,7 +14,7 @@ const Dashboard = () => {
   return (
     <div>
       <h2>Dashboard</h2>
-      <Suspense fallback={<Spin spinning={true} />}>
+      <Suspense fallback={<Spin spinning={loading} />}>
         <Panel list={data} />
       </Suspense>
     </div>

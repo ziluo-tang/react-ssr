@@ -24,7 +24,7 @@ const render = async (req: Request, res: Response) => {
   const html = renderToString(
     <Html
       state={store.getState()}
-      assets={{ js: ["vendor.js", "main.js"], css }}
+      assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
     >
       <Provider store={store}>
         <StaticRouter location={req.url}>
@@ -76,14 +76,15 @@ const getBundleFromStatic = () => {
 
 const loadComponentProps = (req: Request, store) => {
   const routes = matchRoutes(routerConfig, req.url);
-  const initFns = routes?.map(({ route }) => {
-    return (
-      route.element?.type?.getServerSideProps ??
-      route.component?.getServerSideProps ??
-      (() => Promise.resolve())
-    );
-  });
-  return Promise.all((initFns ?? []).map((fn) => fn(store)));
+  const initFns =
+    routes?.map(({ route }) => {
+      return (
+        route.element?.type?.getServerSideProps ??
+        route.component?.getServerSideProps ??
+        (() => Promise.resolve())
+      );
+    }) ?? [];
+  return Promise.all(initFns.map((fn) => fn(store)));
 };
 
 const Html = ({

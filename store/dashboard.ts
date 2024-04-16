@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Request from "./request";
 
 const dashboardSlice = createSlice({
   name: "dashboard",
@@ -32,27 +33,9 @@ export const { setData } = dashboardSlice.actions;
 export const getDashboardData = createAsyncThunk(
   "dashboard/getDashboardData",
   async () => {
-    const ret = await request([
-      { label: "UserName", children: "Zhou Maomao" },
-      { label: "Telephone", children: "1810000000" },
-      { label: "Live", children: "Hangzhou, Zhejiang" },
-      { label: "Remark", children: "empty" },
-      {
-        label: "Address",
-        children:
-          "No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China",
-      },
-    ]);
-    return ret;
+    return await Request.get("/api/dashboard");
   }
 );
-
-const request = (args) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(args);
-    }, 1000);
-  });
 
 export const selectDashboard = (state) => state.dashboard;
 

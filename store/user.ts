@@ -1,16 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Request from "./request";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    list: [
-      {
-        name: "tangxiaoxin",
-        email: "1302947749@qq.com",
-        avatar: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
-        git: "https://github.com/ziluo-tang",
-      },
-    ],
+    list: [],
   },
   reducers: {
     setUserInfo: (state, action) => {
@@ -20,9 +14,18 @@ const userSlice = createSlice({
       state.list.push(action.payload);
     },
   },
+  extraReducers(builder) {
+    builder.addCase(getUserList.fulfilled, (state, action) => {
+      state.list = action.payload;
+    });
+  },
 });
 
 export const { setUserInfo, insertUser } = userSlice.actions;
+
+export const getUserList = createAsyncThunk("user/getUserList", async () => {
+  return await Request.get("/api/user");
+});
 
 export const selectAllUser = (state) => state.user.list;
 

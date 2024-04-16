@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Spin, Button, Space } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import { insertUser, selectAllUser } from "../../store/user";
+import { insertUser, selectAllUser, getUserList } from "../../store/user";
 import css from "./index.less";
 
 const UserList = lazy(() => import("./List"));
@@ -38,19 +38,12 @@ const User = () => {
   );
 };
 
-// User.getServerSideProps = async (store) => {
-//   console.log("User getServerSideProps");
-//   store.dispatch(
-//     insertUser({
-//       name: "xxx",
-//       email: "xxxx",
-//       git: "xxxx",
-//       avatar: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
-//     })
-//   );
-//   return {
-//     props: {},
-//   };
-// };
+User.getServerSideProps = async (store) => {
+  console.log("User getServerSideProps");
+  store.dispatch(getUserList());
+  return {
+    props: {},
+  };
+};
 
 export default User;

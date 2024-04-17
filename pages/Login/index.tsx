@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import Icon from "../components/Icon";
+import Icon from "../components/Logo";
 import css from "./index.less";
 const Login = () => {
   const navigate = useNavigate();

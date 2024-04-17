@@ -26,5 +26,12 @@ function getItem({
 export default function () {
   const { pathname } = useLocation();
   const items = menu.map((route) => getItem(route));
-  return <Menu mode="vertical" theme="dark" selectedKeys={[pathname]} items={items}></Menu>;
+  return (
+    <Menu
+      mode="vertical"
+      theme="dark"
+      selectedKeys={[pathname]}
+      items={items}
+    ></Menu>
+  );
 }

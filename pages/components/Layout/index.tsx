@@ -3,7 +3,7 @@ import { Layout, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LogoutOutlined } from "@ant-design/icons";
 import Menu from "../Menu";
-import Icon from "../Icon";
+import Icon from "../Logo";
 import css from "./index.less";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -23,7 +23,7 @@ const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
   return (
     <Layout className={css.layout}>
       <Sider className={css.sider}>
-        <Icon />
+        <Icon className={css.logo} />
         <Menu />
       </Sider>
       <Layout className={css.main}>

@@ -10,7 +10,7 @@ const UserList = ({ list }) => {
           <Card
             className={css.card}
             key={index}
-            cover={<img src={avatar} />}
+            cover={<img src={avatar} width={"100%"} />}
             hoverable
           >
             <Card.Meta title={name} description={email} />

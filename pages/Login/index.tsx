@@ -1,18 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, Input, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import Icon from "../components/Logo";
+import Request from "../../store/request";
 import css from "./index.less";
 const Login = () => {
   const navigate = useNavigate();
   const onFinish = (values: FormData) => {
-    navigate("/");
+    Request.post("/api/login", values).then((res) => {
+      localStorage.setItem("token", res.token);
+      navigate("/");
+    });
   };
 
   return (
     <div className={css.login}>
       <div className={css.form}>
-        <Icon />
+        <Icon className={css.logo} />
         <Form onFinish={onFinish} labelCol={{ span: 4 }}>
           <Form.Item
             label="用户名"

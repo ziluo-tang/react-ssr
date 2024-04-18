@@ -16,6 +16,7 @@ const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
       okText: "确认",
       cancelText: "再想想",
       onOk() {
+        localStorage.removeItem("token");
         navigate("/login");
       },
     });

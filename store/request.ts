@@ -9,6 +9,9 @@ class IRequest {
     }
     return fetch(url, {
       method: "get",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
     }).then(this.resolveRes);
   }
   post(url, data) {
@@ -17,17 +20,17 @@ class IRequest {
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
     }).then(this.resolveRes);
   }
   private async resolveRes(res) {
     if (res.ok) {
-      return res.json();
+      return await res.json();
     } else {
       throw new Error(res.statusText);
     }
   }
 }
-
 
 export default new IRequest();

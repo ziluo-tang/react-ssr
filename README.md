@@ -8,7 +8,7 @@ Server-side rendering architecture based on React and Express, supporting:
 - dynamic load：lazy, react-loadable, renderToPipeableStream
 - spiteChunk：code-splitting
 - HMR：hot-reload
-- and so on
+- and so on...
 
 ## Start
 

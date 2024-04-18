@@ -8,7 +8,7 @@ import compression from "compression";
 import bodyParser from "body-parser";
 import { expressjwt } from "express-jwt";
 import cookieParser from "cookie-parser";
-import getPort from "get-port";
+import { getPort } from "get-port-please";
 import login from "./login";
 import dashboard from "./dashboard";
 import user from "./user";

@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Layout, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LogoutOutlined } from "@ant-design/icons";
 import Menu from "../Menu";
 import Icon from "../Logo";
 import css from "./index.less";
+import { isClient } from "../../../util/isServer";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const BasicLayout = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
   const onLogout = () => {
     Modal.confirm({
       title: "确认退出吗？",

@@ -7,6 +7,8 @@ import express, {
 import compression from "compression";
 import bodyParser from "body-parser";
 import { expressjwt } from "express-jwt";
+import cookieParser from "cookie-parser";
+import getPort from "get-port";
 import login from "./login";
 import dashboard from "./dashboard";
 import user from "./user";
@@ -15,6 +17,7 @@ import { secretKey } from "./const";
 
 const app: Application = express();
 
+app.use(cookieParser());
 app.use(bodyParser());
 app.use(compression());
 app.use(express.static("dist/client"));
@@ -22,7 +25,7 @@ app.use(
   expressjwt({
     secret: secretKey,
     algorithms: ["HS256"],
-    requestProperty: 'user',
+    requestProperty: "user",
     getToken(req: Request) {
       return req.headers.authorization;
     },
@@ -36,10 +39,12 @@ app.use(render);
 
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   if (err.name === "UnauthorizedError") {
-    res.redirect("/login");
+    res.status(401).send("invalid token...");
   }
 });
 
-app.listen(8000, () => {
-  console.log("server is running, visit: http://localhost:8000");
+getPort({ port: 8000 }).then((port) => {
+  app.listen(port, () => {
+    console.log(`server is running, visit: http://localhost:${port}`);
+  });
 });

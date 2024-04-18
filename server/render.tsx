@@ -44,7 +44,7 @@ const streamRender = async (req: Request, res: Response) => {
   const stream = renderToPipeableStream(
     <Html
       state={store.getState()}
-      assets={{ js: ["vendor.js", "main.js"], css }}
+      assets={{ js: ["vendor.js", "main.js"], css: ["index.css"] }}
     >
       <Provider store={store}>
         <StaticRouter location={req.url}>

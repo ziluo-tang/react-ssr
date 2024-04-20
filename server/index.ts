@@ -12,6 +12,7 @@ import { getPort } from "get-port-please";
 import login from "./login";
 import dashboard from "./dashboard";
 import user from "./user";
+import cms from "./cms";
 import render from "./render";
 import { secretKey } from "./const";
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(bodyParser());
 app.use(compression());
 app.use(express.static("dist/client"));
+app.use(express.static("dist/server/static"));
 app.use(
   expressjwt({
     secret: secretKey,
@@ -35,6 +37,7 @@ app.use(
 app.use("/api/login", login);
 app.use("/api/dashboard", dashboard);
 app.use("/api/user", user);
+app.use("/api/cms", cms);
 app.use(render);
 
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {

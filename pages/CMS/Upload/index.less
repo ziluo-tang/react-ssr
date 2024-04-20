@@ -1,0 +1,38 @@
+.wrap {
+  width: 100%;
+  .upload {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    &:hover {
+      border-color: rgba(22, 119, 255, 0.75);
+      .placeholder {
+        color: rgba(22, 119, 255, 0.8);
+      }
+    }
+    .input {
+      all: unset;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .placeholder {
+      letter-spacing: 1px;
+      color: rgb(159, 153, 153, 0.8);
+      position: absolute;
+      z-index: 0;
+      font-style: italic;
+    }
+  }
+  .progress {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}

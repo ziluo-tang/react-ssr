@@ -1,36 +1,17 @@
-class IRequest {
-  get(url, params?) {
-    if (params) {
-      url = `${url}?${Object.keys(params)
-        .map((key) => {
-          return key + "=" + params[key];
-        })
-        .join("&")}`;
-    }
-    return fetch(url, {
-      method: "get",
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }).then(this.resolveRes);
-  }
-  post(url, data) {
-    return fetch(url, {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
-      },
-    }).then(this.resolveRes);
-  }
-  private async resolveRes(res) {
-    if (res.ok) {
-      return await res.json();
-    } else {
-      throw new Error(res.statusText);
-    }
-  }
-}
+import axios from "axios";
+import { isClient } from "../util/isServer";
 
-export default new IRequest();
+const request = axios.create({
+  baseURL: "/api",
+  timeout: 10000,
+  headers: isClient
+    ? {
+        Authorization: localStorage.getItem("token"),
+      }
+    : {},
+});
+request.interceptors.response.use((response) => {
+  return response.data;
+});
+
+export default request;

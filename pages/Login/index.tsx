@@ -7,7 +7,10 @@ import css from "./index.less";
 const Login = () => {
   const navigate = useNavigate();
   const onFinish = (values: FormData) => {
-    Request.post("/api/login", values).then((res) => {
+    Request.post<{ user: string; password: string }, { token: string }>(
+      "/login",
+      values
+    ).then((res) => {
       localStorage.setItem("token", res.token);
       navigate("/");
     });

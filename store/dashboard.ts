@@ -33,7 +33,7 @@ export const { setData } = dashboardSlice.actions;
 export const getDashboardData = createAsyncThunk(
   "dashboard/getDashboardData",
   async () => {
-    return await Request.get("/api/dashboard");
+    return await Request.get<any, []>("/dashboard");
   }
 );
 

@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from "react";
 import Progress, { type ProgressBarProps } from "./Progress";
-import axios from "axios";
-import css from "./index.less";
-import { Form } from "react-router-dom";
 import { message } from "antd";
+import Request from '.././../../store/request'
+import css from "./index.less";
 
 type UploadProps = Partial<{
   title: string;
@@ -22,7 +21,7 @@ const Upload = ({
   accept,
   multiple,
   children,
-  action,
+  action = '/cms/upload',
   className,
   onChange,
 }: UploadProps) => {
@@ -111,10 +110,9 @@ const uploadFiles = (
     files.map((file) => {
       const formData = new FormData();
       formData.append("file", file);
-      return axios.post(action, formData, {
+      return Request.post(action, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem("token"),
         },
         onUploadProgress(progressEvent) {
           const { loaded, total } = progressEvent;

@@ -6,8 +6,8 @@ const CMS = () => {
   return (
     <div className={css.cms}>
       <div className={css.upload}>
-        <Upload directory={true} action="/api/cms/upload" />
-        <Upload multiple={true} action="/api/cms/upload" />
+        <Upload directory={true} />
+        <Upload multiple={true} />
       </div>
     </div>
   );

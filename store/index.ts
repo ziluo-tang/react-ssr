@@ -13,6 +13,7 @@ const getClientStore = () => {
       preloadedState,
       //@ts-ignore
       reducer,
+      //@ts-ignore
       middleware(getDefaultMiddleware) {
         const defaultMiddleware = getDefaultMiddleware({
           serializableCheck: false,

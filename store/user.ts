@@ -24,7 +24,7 @@ const userSlice = createSlice({
 export const { setUserInfo, insertUser } = userSlice.actions;
 
 export const getUserList = createAsyncThunk("user/getUserList", async () => {
-  return await Request.get("/api/user");
+  return await Request.get<any, []>("/user");
 });
 
 export const selectAllUser = (state) => state.user.list;

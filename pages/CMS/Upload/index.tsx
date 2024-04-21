@@ -31,25 +31,29 @@ const Upload = ({
     const files = e.target.files;
     setProgressList([]);
     onChange && onChange([...files]);
-    uploadFiles(action, [...files], (data) => {
-      const { fileName, percent } = data;
-      setProgressList((list) => {
-        const newList = [...list];
-        const index = newList.findIndex((item) => item.title === fileName);
-        if (index !== -1) {
-          newList[index] = {
-            title: fileName,
-            percent,
-          };
-        } else {
-          newList.push({
-            title: fileName,
-            percent,
-          });
-        }
-        return newList;
-      });
-    })
+    uploadFiles(
+      action,
+      [...files].filter(({ name }) => !name.endsWith(".DS_Store")),
+      (data) => {
+        const { fileName, percent } = data;
+        setProgressList((list) => {
+          const newList = [...list];
+          const index = newList.findIndex((item) => item.title === fileName);
+          if (index !== -1) {
+            newList[index] = {
+              title: fileName,
+              percent,
+            };
+          } else {
+            newList.push({
+              title: fileName,
+              percent,
+            });
+          }
+          return newList;
+        });
+      }
+    )
       .then(() => {
         message.success("上传成功");
       })

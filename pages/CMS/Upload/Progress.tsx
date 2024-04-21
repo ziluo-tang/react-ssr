@@ -9,7 +9,7 @@ export type ProgressBarProps = {
 const ProgressBar = ({ title, percent }: ProgressBarProps) => {
   return (
     <div>
-      <span>{title}</span>
+      <span style={{ color: "#888" }}>{title}</span>
       <Progress size={"small"} percent={percent} />
     </div>
   );

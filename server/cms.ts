@@ -1,13 +1,14 @@
 import { Router, type Request, Response } from "express";
 import multiparty from "multiparty";
 import { join } from "path";
-import { existsSync, mkdirSync, rename } from "fs";
+import { existsSync, mkdirSync, rename, readdirSync, statSync } from "fs";
 
 const router = Router();
 
+const baseDir = join(__dirname, "static");
+
 router.post("/upload", (req: Request, res: Response) => {
   const multipart = new multiparty.Form();
-  const baseDir = join(__dirname, "static");
   if (!existsSync(baseDir)) {
     mkdirSync(baseDir);
   }
@@ -29,26 +30,65 @@ router.post("/upload", (req: Request, res: Response) => {
                 console.log(err);
                 reject(err);
               }
-              resolve(true);
+              resolve(dest);
             });
           })
       )
     )
-      .then(() => {
+      .then((data) => {
         res.json({
           code: 1,
-          data: "success",
-          msg: "上传成功",
+          data,
+          message: "success",
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         res.status(500).send({
           code: -1,
-          data: "error",
-          msg: "上传失败",
+          error,
+          message: "error",
         });
       });
   });
+});
+
+router.get("/download", (req: Request, res: Response) => {
+  const { file } = req.query;
+  res.sendFile(join(baseDir, file as string));
+});
+
+router.get("/getAsset", (req: Request, res: Response) => {
+  const { path = "/" } = req.query;
+  try {
+    const files = readdirSync(join(baseDir, path as string));
+    res.json(
+      files.map((file) => {
+        const filePath = join(baseDir, path as string, file);
+        const stat = statSync(filePath);
+        if (stat.isFile()) {
+          return {
+            path: filePath,
+            name: file,
+            size: stat.size,
+            type: "file",
+          };
+        } else {
+          return {
+            path: filePath,
+            name: file,
+            size: stat.size,
+            type: "dir",
+          };
+        }
+      })
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      code: -1,
+      message: error.message,
+    });
+  }
 });
 
 const mkdirSyncFromPath = (baseDir: string, path: string) => {

@@ -8,10 +8,9 @@ import {
   readdirSync,
   statSync,
   createReadStream,
-  writeFileSync,
-  unlinkSync,
 } from "fs";
 import jsZip from "jszip";
+import { rimraf } from "rimraf";
 
 const router = Router();
 
@@ -132,6 +131,22 @@ router.get("/getAsset", (req: Request, res: Response) => {
           };
         }
       }),
+      message: "success",
+    });
+  } catch (error) {
+    res.status(500).send({
+      code: -1,
+      message: `no such file or directory: ${path}`,
+    });
+  }
+});
+
+router.delete("/delete", (req: Request, res: Response) => {
+  const { path = "/" } = req.query;
+  try {
+    rimraf.sync(join(baseDir, path as string));
+    res.json({
+      code: 1,
       message: "success",
     });
   } catch (error) {

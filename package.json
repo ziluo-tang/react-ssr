@@ -28,6 +28,7 @@
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.3",
     "redux-logger": "^3.0.6",
+    "rimraf": "^5.0.5",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {

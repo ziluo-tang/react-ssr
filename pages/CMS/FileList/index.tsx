@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Table, Space, Button, Breadcrumb } from "antd";
+import { Table, Space, Button, Breadcrumb, message } from "antd";
 import Request from "../../../store/request";
 import axios from "axios";
 import styles from "./index.less";
@@ -52,7 +52,17 @@ const FileList = () => {
     [paths]
   );
 
-  const onDelete = useCallback(() => {}, []);
+  const onDelete = useCallback(
+    (path?: string) => {
+      const dir = paths.map((item) => item.title);
+      path = dir.concat([path]).join("/");
+      Request.delete("/cms/delete", { params: { path } }).then((res) => {
+        message.success("删除成功");
+        getAsset(dir.join("/"));
+      });
+    },
+    [paths]
+  );
 
   const columns = [
     {
@@ -120,7 +130,7 @@ const FileList = () => {
             <Button type="link" onClick={() => onDownload(row.name)}>
               下载
             </Button>
-            <Button type="link" onClick={onDelete}>
+            <Button type="link" onClick={() => onDelete(row.name)}>
               删除
             </Button>
           </Space>

@@ -9,8 +9,8 @@ const CMS = () => {
       <div className={css.upload}>
         <Upload directory={true} />
         <Upload multiple={true} />
-        <FileList />
       </div>
+      <FileList />
     </div>
   );
 };

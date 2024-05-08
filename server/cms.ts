@@ -1,7 +1,17 @@
 import { Router, type Request, Response } from "express";
 import multiparty from "multiparty";
-import { join } from "path";
-import { existsSync, mkdirSync, rename, readdirSync, statSync } from "fs";
+import { join, basename } from "path";
+import {
+  existsSync,
+  mkdirSync,
+  rename,
+  readdirSync,
+  statSync,
+  createReadStream,
+  writeFileSync,
+  unlinkSync,
+} from "fs";
+import jsZip from "jszip";
 
 const router = Router();
 
@@ -53,24 +63,64 @@ router.post("/upload", (req: Request, res: Response) => {
 });
 
 router.get("/download", (req: Request, res: Response) => {
-  const { file } = req.query;
-  res.sendFile(join(baseDir, file as string));
+  const { file = "/" } = req.query;
+  const filePath = join(baseDir, file as string);
+  const filename = encodeURI(basename(filePath));
+  if (existsSync(filePath)) {
+    const stat = statSync(filePath);
+    res.set({
+      "content-type": "application/octet-stream",
+      "content-disposition": `attachment;filename=${filename}`,
+    });
+    if (stat.isFile()) {
+      createReadStream(filePath).pipe(res);
+    } else {
+      //zip包
+      res.set({
+        "content-disposition": `attachment;filename=${filename}.zip`,
+      });
+      const zip = new jsZip();
+      readDir(zip, filePath);
+      zip
+        .generateNodeStream({
+          type: "nodebuffer",
+          compression: "DEFLATE",
+          compressionOptions: { level: 9 },
+        })
+        .pipe(res);
+    }
+  } else {
+    res.json({
+      code: -1,
+      message: `no such file or directory: ${file}`,
+    });
+  }
 });
 
 router.get("/getAsset", (req: Request, res: Response) => {
   const { path = "/" } = req.query;
   try {
+    if (!existsSync(baseDir)) {
+      res.json({
+        code: 1,
+        data: [],
+        message: "success",
+      });
+    }
     const files = readdirSync(join(baseDir, path as string));
-    res.json(
-      files.map((file) => {
+    res.json({
+      code: 1,
+      data: files.map((file) => {
         const filePath = join(baseDir, path as string, file);
         const stat = statSync(filePath);
+        const modifiedTime = stat.mtime.getTime();
         if (stat.isFile()) {
           return {
             path: filePath,
             name: file,
             size: stat.size,
             type: "file",
+            modifiedTime,
           };
         } else {
           return {
@@ -78,15 +128,16 @@ router.get("/getAsset", (req: Request, res: Response) => {
             name: file,
             size: stat.size,
             type: "dir",
+            modifiedTime,
           };
         }
-      })
-    );
+      }),
+      message: "success",
+    });
   } catch (error) {
-    console.log(error);
     res.status(500).send({
       code: -1,
-      message: error.message,
+      message: `no such file or directory: ${path}`,
     });
   }
 });
@@ -99,6 +150,20 @@ const mkdirSyncFromPath = (baseDir: string, path: string) => {
     dir = join(baseDir, dir);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   }
+};
+
+const readDir = (zip: jsZip, dir: string) => {
+  const files = readdirSync(dir);
+  files.forEach((file) => {
+    const filePath = join(dir, file);
+    const stat = statSync(filePath);
+    if (stat.isFile()) {
+      zip.file(file, createReadStream(filePath));
+    } else {
+      const temp = zip.folder(file);
+      readDir(temp, filePath);
+    }
+  });
 };
 
 export default router;
